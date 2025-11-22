@@ -1,0 +1,44 @@
+<html>
+<head>
+    <title>Добро пожаловать в Ваш личный кабинет</title>
+</head>
+<body>
+    <h3>Ваши данные:</h3>
+    
+    <div id="profileContent">
+        <p><strong>ФИО:</strong> <span id="fullName">Загрузка...</span></p>
+        <p><strong>Пол:</strong> <span id="gender">Загрузка...</span></p>
+        <p><strong>Возраст:</strong> <span id="age">Загрузка...</span></p>
+        <p><strong>Семейное положение:</strong> <span id="maritalStatus">Загрузка...</span></p>
+        <p><strong>Номер счета:</strong> <span id="accountNumber">Загрузка...</span></p>
+        <p><strong>Капитал:</strong> <span id="capital">Загрузка...</span></p>
+    </div>
+    
+    <button onclick="logout()">Выйти</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const clientData = JSON.parse(localStorage.getItem('clientData'));
+            
+            if (!clientData) {
+                alert('Пожалуйста, войдите в систему');
+                window.location.href = 'airlines.lk.html';
+                return;
+            }
+            
+            document.getElementById('fullName').textContent = 
+                `${clientData.last_name} ${clientData.first_name} ${clientData.middle_name || ''}`;
+            document.getElementById('gender').textContent = clientData.gender;
+            document.getElementById('age').textContent = clientData.age;
+            document.getElementById('maritalStatus').textContent = clientData.marital_status;
+            document.getElementById('accountNumber').textContent = clientData.account_number;
+            document.getElementById('capital').textContent = `${clientData.capital} ₽`;
+        });
+        
+        function logout() {
+            localStorage.removeItem('clientData');
+            window.location.href = 'airlines.lk.html';
+        }
+    </script>
+</body>
+</html>

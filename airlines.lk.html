@@ -1,0 +1,75 @@
+<html>
+<head>
+    <title>Вход в личный кабинет банка</title>
+</head>
+<body>
+    <h3>Введите свои данные, чтобы авторизироваться на сайте</h3>
+    
+    <form id="loginForm">
+        <label for="passport_series">Серия паспорта:</label>
+        <input type="password" id="passport_series" name="passport_series" 
+               pattern="[0-9]{4}" title="Введите 4 цифры" required maxlength="4">
+        <br><br>
+        
+        <label for="passport_number">Номер паспорта:</label>
+        <input type="password" id="passport_number" name="passport_number" 
+               pattern="[0-9]{6}" title="Введите 6 цифр" required maxlength="6">
+        <br><br>
+        
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" 
+               pattern="[0-9]{6}" title="Введите 6 цифр" required maxlength="6">
+        <br><br>
+        
+        <button type="submit">Войти</button>
+    </form>
+    
+    <div id="errorMessage" style="color: red; display: none;"></div>
+
+    <footer>
+        <h3>Спасибо, что выбираете нас</h3>
+    </footer>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                passport_series: document.getElementById('passport_series').value,
+                passport_number: document.getElementById('passport_number').value,
+                password: document.getElementById('password').value
+            };
+
+            console.log("Отправляемые данные:", formData);  // Отладка в консоли браузера
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                console.log("Статус ответа:", response.status);  // Отладка
+                
+                if (response.ok) {
+                    const clientData = await response.json();
+                    console.log("Полученные данные:", clientData);  // Отладка
+                    localStorage.setItem('clientData', JSON.stringify(clientData));
+                    window.location.href = 'ticket.html';
+                } else {
+                    const error = await response.json();
+                    console.log("Ошибка сервера:", error);  // Отладка
+                    document.getElementById('errorMessage').textContent = error.detail;
+                    document.getElementById('errorMessage').style.display = 'block';
+                }
+            } catch (error) {
+                console.log("Ошибка сети:", error);  // Отладка
+                document.getElementById('errorMessage').textContent = 'Ошибка соединения с сервером';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
